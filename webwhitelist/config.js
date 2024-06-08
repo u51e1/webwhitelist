@@ -1,14 +1,14 @@
 const config = {
-    db: { // Êı¾İ¿âÅäÖÃ
-        host: '192.168.1.53',
+    db: { // æ•°æ®åº“é…ç½®
+        host: 'hostname',
         user: 'webwhitelist',
         password: 't64tkzXcFAwss2Sb',
         database: 'webwhitelist'
     },
-    registerLimit: 1, // Ã¿¸öIPµØÖ·µÄ×î´ó×¢²áÊıÁ¿
-    emailLimit: 1,   // Ã¿¸öÓÊÏäµØÖ·µÄ×î´ó×¢²áÊıÁ¿
-    sessionSecret: 'webwhitelist', // session¼ÓÃÜÃÜÔ¿
-    secondSend: 60, // Á½´Î·¢ËÍÑéÖ¤ÂëÊ±¼ä¼ä¸ô£¨Ãë£©
+    registerLimit: 1, // æ¯ä¸ªIPåœ°å€çš„æœ€å¤§æ³¨å†Œæ•°é‡
+    emailLimit: 1,   // æ¯ä¸ªé‚®ç®±åœ°å€çš„æœ€å¤§æ³¨å†Œæ•°é‡
+    sessionSecret: 'webwhitelist', // sessionåŠ å¯†å¯†é’¥
+    secondSend: 60, // ä¸¤æ¬¡å‘é€éªŒè¯ç æ—¶é—´é—´éš”ï¼ˆç§’ï¼‰(æœªå®Œå–„)
 };
 
 module.exports = config;
