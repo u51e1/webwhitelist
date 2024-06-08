@@ -1,26 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register with Email Verification</title>
+    <title>白名单注册</title>
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            background-color: #f0f0f0; 
+        }
+
+        .container {
+            width: 323px;
+            max-width: 700px;
+            text-align: center;
+            background-color: #fff;
+            padding: 20px 15px 20px 15px;
+            margin: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #007bff;
+            text-align: center;
+        }
+        p {
+            text-indent: 2em;
+            color: #6c757d;
+            font-size: 14px;
+            margin-bottom: 20px;
+            padding: 10px;
+        }
+
+        .svc {
+            color: black;
+            background-color: #dfdfdf;
+            cursor: pointer;
+            border: none;
+            font-size: 12px;
+            padding: 5px 10px;
+            border-radius: 24px;
+            
+        }
+
+        .botton {
+            background-color: #007bff;
+            color: #f0f0f0;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+        }
+
+        input {
+            background-color: transparent;
+            color: black;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 130px;
+            height: 21px;
+        }
+    </style>
 </head>
+
 <body>
-    <h1>User Registration with Email Verification</h1>
+    <h1>白名单注册</h1>
+    <p>请填写以下信息，我们将通过电子邮件的方式发送验证码，以验证您身份。</p>
     <form id="registrationForm">
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required>
+        <div class="container">
+            <div style="display: flex;">
+                <label for="email">邮箱:</label>
+                <input type="email" style="width: 200px;" id="email" name="email" required>
 
-        <button type="button" onclick="sendVerificationCode()">Send Verification Code</button>
-        <br>
-
-        <label for="code">Verification Code:</label>
-        <input type="text" id="code" name="code" required>
-
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required>
-        
-        <button type="submit">Register</button>
+                <button type="button" class="svc" onclick="sendVerificationCode()">获取验证码</button>
+            </div>
+            <br>
+            <label for="code">验证码:</label>
+            <input type="text" id="code" name="code" required>
+            <br>
+            <label for="username">用户名:</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+        <div style="display: flex; justify-content: center; margin-top: 20px;">
+            <button type="submit" class="botton">注册</button>
+        </div>
     </form>
 
     <script>
@@ -33,12 +100,12 @@
                 },
                 body: `email=${encodeURIComponent(email)}`
             })
-            .then(response => response.text())
-            .then(data => alert(data))
-            .catch(error => alert('Error sending verification code: ' + error));
+                .then(response => response.text())
+                .then(data => alert(data))
+                .catch(error => alert('Error sending verification code: ' + error));
         }
 
-        document.getElementById('registrationForm').addEventListener('submit', function(event) {
+        document.getElementById('registrationForm').addEventListener('submit', function (event) {
             event.preventDefault();
             const email = document.getElementById('email').value;
             const code = document.getElementById('code').value;
@@ -51,10 +118,11 @@
                 },
                 body: `username=${encodeURIComponent(username)}&email=${encodeURIComponent(email)}&code=${encodeURIComponent(code)}`
             })
-            .then(response => response.text())
-            .then(data => alert(data))
-            .catch(error => alert('Error during registration: ' + error));
+                .then(response => response.text())
+                .then(data => alert(data))
+                .catch(error => alert('Error during registration: ' + error));
         });
     </script>
 </body>
+
 </html>
