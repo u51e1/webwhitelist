@@ -5,7 +5,17 @@ const config = require('./config');
 const session = require('express-session');
 const { sendVerificationEmail } = require('./mailer');
 
+global.code = null;
+function generateRandomNumber() {
+    // 生成一个随机数（示例为1到100之间的整数）
+    var code = Math.floor(100000 + Math.random() * 900000);  // 生成6位随机数验证码
 
+    // 将随机数赋给全局变量
+    global.code = code;
+    code = code.toString();
+}
+generateRandomNumber();
+console.log(global.code);
 // 使用配置文件中的信息来创建数据库连接
 const db = mysql.createConnection({
     host: config.db.host,
@@ -21,13 +31,14 @@ app.use(session({
     saveUninitialized: true
 }));
 
+
 app.post('/send-code', (req, res) => {
     const email = req.body.email;
-    const code = Math.floor(100000 + Math.random() * 900000);  // 生成6位随机数验证码
-
+    generateRandomNumber();
     // 将验证码存储在session中，用于后续验证
     req.session.code = code;
     req.session.email = email;
+    req.session.verificationCode = req.body.code;  // 将验证码存储在会话中
 
     sendVerificationEmail(email, code)
         .then(() => {
@@ -80,8 +91,13 @@ app.get('/register', (req, res) => {
 app.post('/register', (req, res) => {
     const { username, email } = req.body;
     const ip_address = req.ip;
+    
+    var code_ = req.body.code;
+    var code__ = global.code.toString();
 
-    if (req.session.verificationCode !== code) {
+    console.log(typeof code_, code_);
+    console.log(typeof code__, code__);
+    if (code_ !== code__) {
         return res.status(400).send('Invalid verification code.');
     }
     // 检查用户名是否已存在
@@ -94,14 +110,15 @@ app.post('/register', (req, res) => {
             return res.status(409).send('Username already exists.');
         }
         // 检查该邮箱是否已达到注册限制
-        const checkEmailQuery = 'SELECT COUNT(*) AS count FROM users WHERE ' + email + ' = ?';
-        db.query(checkEmailQuery, [email], (err, results) => {
-            if (err) return res.status(500).send('Database error.');
+        // 这部分没有完善，谁如果有兴趣可以继续编写
+        const checkEmailQuery = 'SELECT COUNT(*) AS count FROM users WHERE email = ?';
+        //db.query(checkEmailQuery, [email], (err, results) => {
+            //if (err) return res.status(500).send('Database error.');
 
-            if (results[0].count >= config.emailLimit) {
-                return res.status(400).send('This email has reached its registration limit.');
-            }
-            const query = 'SELECT COUNT(*) AS count FROM users WHERE ' + ip_address + ' = ?';
+            //if (results[0].count >= config.emailLimit) {
+            //    return res.status(400).send('This email has reached its registration limit.');
+            //}
+            const query = 'SELECT COUNT(*) AS count FROM users WHERE ip_address = ?';
             db.query(query, [ip_address], (err, results) => {
                 if (err) {
                     return res.status(500).send('Database error.');
@@ -111,11 +128,11 @@ app.post('/register', (req, res) => {
                 }
             
             // 插入新用户
-            const insertQuery = 'INSERT INTO users ('+ username + ',' + ip_address + ',' + email+ ') VALUES (?, ?, ?)';
-                db.query(insertQuery, [username, ip_response_address, email], (err, result) => {
+                const insertQuery = `INSERT INTO users (username,ip_address) VALUES (?, ?)`;
+                db.query(insertQuery, [username, ip_address], (err, result) => {
                     if (err) return res.status(500).send('Error registering user.');
                     res.send('User registered successfully.');
-                });
+                //});
             });
         });
     });
